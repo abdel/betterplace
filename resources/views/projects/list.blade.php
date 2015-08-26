@@ -18,11 +18,11 @@
 			</div>
 
 			<div class="btn btn-default {{ activeFilter('active') }}" data-status="active">
-				<span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> Active
+				<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Active
 			</div>
 
 			<div class="btn btn-default {{ activeFilter('completed') }}" data-status="completed">
-				<span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> Completed
+				<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Completed
 			</div>
 		</div>
 
