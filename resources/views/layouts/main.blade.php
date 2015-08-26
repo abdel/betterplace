@@ -35,10 +35,7 @@
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
-    <script src="/js/raphael/raphael-min.js"></script>
-    <script src="/js/morrisjs/morris.min.js"></script>
     <script src="/js/d3-data.js"></script>
-    <script src="/js/morris-data.js"></script>
     <script src="/js/main.js"></script>
   </body>
 </html>
