@@ -39,7 +39,7 @@
 			<div class="form-group">
 			  	<select class="form-control" id="sort_key">
 				    <option value="title" {{ isSelected($field, 'title') }}>Title</option>
-				    <option value="donors_count" {{ isSelected($field, 'donors_count') }}>Donors</option>
+				    <option value="donor_count" {{ isSelected($field, 'donor_count') }}>Donors</option>
 				    <option value="progress_percentage" {{ isSelected($field, 'progress_percentage') }}>Funding</option>
 				    <option value="positive_opinions_count" {{ isSelected($field, 'positive_opinions_count') }}>Positive Opinion</option>
 			  	</select>

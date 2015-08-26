@@ -11,6 +11,16 @@ $(".filtersort select#sort_key").change(function() {
 	setGetParameter('field', $('#sort_key').val());
 });
 
+$('#updatePopover').popover({ 
+    trigger: "hover", 
+    placement: 'bottom',
+    toggle : "popover",
+    content : "Data is updated automatically via a scheduled task every hour. Click here to manually update.",
+    title: "Manual Data Update",
+    container: 'body',
+    template: '<div class="popover popover-medium"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>',
+});
+
 function viewProject(id) {
 	window.open($('#project_'+id).data('location'),'_blank');
 }

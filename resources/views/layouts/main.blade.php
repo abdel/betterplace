@@ -19,9 +19,11 @@
             <li class="{{ setActive('projects.list') }}"><a href="/projects/list?status=all">Projects</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li class="{{ setActive('projects.update-all') }}"><a href="/projects/update-all">
+            <li class="{{ setActive('projects.update-all') }}">
+              <a id="updatePopover" href="/projects/update-all">
                 <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-            </a></li>
+              </a>   
+            </li>
           </ul>
         </div>
       </div>
@@ -32,6 +34,8 @@
             @yield('content')
         </div>
     </div>
+
+    
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>

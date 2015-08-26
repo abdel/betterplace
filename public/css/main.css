@@ -1,5 +1,5 @@
 .content {
-  padding: 40px 15px;
+  padding: 30px 15px;
 }
 
 .filtersort {
@@ -45,4 +45,8 @@
 
 #heatMap text.axis-worktime {
     fill: #000;
+}
+
+.popover-medium {
+    max-width: 350px;
 }
