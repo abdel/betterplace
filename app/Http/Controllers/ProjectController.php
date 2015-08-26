@@ -78,11 +78,16 @@ class ProjectController extends Controller {
 
     public function getUpdateAll()
     {
-        set_time_limit(60); // Avoid timeout
-
-        // Get all projects around Egypt
+        // Fetch all projects in Egypt
+        $ch = curl_init();
         $projectsUrl = "https://api.betterplace.org/en/api_v4/projects.json?around=Egypt&scope=location&per_page=100";
-        $projects = json_decode(file_get_contents($projectsUrl), true);
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL,  $projectsUrl);
+        
+        $projects = json_decode(curl_exec($ch), true);
+        curl_close($ch);
 
         foreach ($projects['data'] as $project)
         {
@@ -110,34 +115,58 @@ class ProjectController extends Controller {
                 $newProject = Project::firstOrNew(array('external_id' => $project['id']));
                 $newProject->fill($projectData);
                 $newProject->save();
+            }
+        }
 
-                // Fetch all opinions for the given project
-                $opinionsUrl = "https://api.betterplace.org/de/api_v4/projects/".$project['id']."/opinions.json?per_page=".$project['donor_count'];
-                $opinions = json_decode(file_get_contents($opinionsUrl), true);
+        // Fetch all opinions for the given project
+        $mh = curl_multi_init();
+        $curl_arr = array();
+        $projects = Project::all();
+        $totalProjects = $projects->count();
 
-                foreach ($opinions['data'] as $opinion)
+        for($i = 0; $i < $totalProjects; $i++)
+        {   
+            $opinionsUrl = "https://api.betterplace.org/de/api_v4/projects/".$projects[$i]['external_id']."/opinions.json?per_page=".$projects[$i]['donor_count'];
+
+            // Executing requests in parallel
+            $curl_arr[$i] = curl_init($opinionsUrl);
+            curl_setopt($curl_arr[$i], CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl_arr[$i], CURLOPT_RETURNTRANSFER, true);
+            curl_multi_add_handle($mh, $curl_arr[$i]);
+        }
+
+        do {
+            curl_multi_exec($mh, $running);
+        } while($running > 0);
+
+        for($i = 0; $i < $totalProjects; $i++)
+        {
+            $opinions = json_decode(curl_multi_getcontent($curl_arr[$i]), true);
+
+            foreach ($opinions['data'] as $opinion)
+            {
+                // Excluding opinions witothout a donation
+                if (isset($opinion['donated_amount_in_cents'])) 
                 {
-                    // Excluding opinions witothout a donation
-                    if (isset($opinion['donated_amount_in_cents'])) 
-                    {
-                        $opinionData = array(
-                            'external_id' => $opinion['id'],
-                            'project_id' => $project['id'],
-                            'donated_amount_in_cents' => $opinion['donated_amount_in_cents'],
-                            'score' => $opinion['score'],
-                            'author' => $opinion['author']['name'],
-                            'message' => $opinion['message'],
-                            'donated_at' => $opinion['created_at']
-                        );
+                    $opinionData = array(
+                        'external_id' => $opinion['id'],
+                        'project_id' => $project['id'],
+                        'donated_amount_in_cents' => $opinion['donated_amount_in_cents'],
+                        'score' => $opinion['score'],
+                        'author' => $opinion['author']['name'],
+                        'message' => $opinion['message'],
+                        'donated_at' => $opinion['created_at']
+                    );
 
-                        // Insert new or update existing opinion
-                        $newOpinion = Opinion::firstOrNew(array('external_id' => $opinion['id']));
-                        $newOpinion->fill($opinionData);
-                        $newOpinion->save();
-                    }
+                    // Insert new or update existing opinion
+                    $newOpinion = Opinion::firstOrNew(array('external_id' => $opinion['id']));
+                    $newOpinion->fill($opinionData);
+                    $newOpinion->save();
                 }
             }
         }
+
+        curl_multi_close($mh);
 
         return view('projects.update');
     }
