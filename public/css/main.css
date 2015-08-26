@@ -1,0 +1,48 @@
+.content {
+  padding: 40px 15px;
+}
+
+.filtersort {
+	margin-bottom: 50px;
+}
+
+.filters {
+	float: left;
+	padding-bottom: 10px;
+}
+
+.filters a, a:hover {
+	color: #000;
+}
+
+.filters a:hover {
+	text-decoration: none;
+}
+
+.sort_key {
+	padding-right: 10px;
+	float: right;
+}
+
+.sort_order {
+	float: right;
+}
+
+#heatMap rect.bordered {
+    stroke: #E6E6E6;
+    stroke-width:2px;   
+}
+
+#heatMap text.mono {
+    font-size: 9pt;
+    font-family: Consolas, courier;
+    fill: #aaa;
+}
+
+#heatMap text.axis-workweek {
+    fill: #000;
+ }
+
+#heatMap text.axis-worktime {
+    fill: #000;
+}
