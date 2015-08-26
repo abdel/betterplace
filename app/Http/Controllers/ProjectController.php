@@ -13,26 +13,35 @@ class ProjectController extends Controller {
     public function getIndex()
     {
         $totalProjects = DB::table('projects')->count();
-        $totalActiveProjects = DB::table('projects')->whereNull('completed_at')->count();
-        $totalCompletedProjects = DB::table('projects')->whereNotNull('completed_at')->count();
-        $totalPercentage = round($totalActiveProjects / $totalProjects * 100);
-        $totalFundsNeeded = DB::table('projects')->sum('open_amount_in_cents');
-        $totalDonors = DB::table('projects')->sum('donor_count');
-        $totalPositiveOpinions = DB::table('projects')->sum('positive_opinions_count');
-        $totalNegativeOpinions = DB::table('projects')->sum('negative_opinions_count');
-        $totalDonations = DB::table('opinions')->sum('donated_amount_in_cents');
 
-        return view('projects.index', [
-            'totalProjects' => $totalProjects,
-            'totalActiveProjects' => $totalActiveProjects,
-            'totalCompletedProjects' => $totalCompletedProjects,
-            'totalPercentage' => $totalPercentage,
-            'totalFundsNeeded' => $totalFundsNeeded,
-            'totalDonors' => $totalDonors,
-            'totalDonations' => $totalDonations,
-            'totalPositiveOpinions' => $totalPositiveOpinions,
-            'totalNegativeOpinions' => $totalNegativeOpinions
-        ]);
+        if ($totalProjects > 0 )
+        {
+            $totalActiveProjects = DB::table('projects')->whereNull('completed_at')->count();
+            $totalCompletedProjects = DB::table('projects')->whereNotNull('completed_at')->count();
+            $totalPercentage = round($totalActiveProjects / $totalProjects * 100);
+            $totalFundsNeeded = DB::table('projects')->sum('open_amount_in_cents');
+            $totalDonors = DB::table('projects')->sum('donor_count');
+            $totalPositiveOpinions = DB::table('projects')->sum('positive_opinions_count');
+            $totalNegativeOpinions = DB::table('projects')->sum('negative_opinions_count');
+            $totalDonations = DB::table('opinions')->sum('donated_amount_in_cents');
+
+            return view('projects.index', [
+                'totalProjects' => $totalProjects,
+                'totalActiveProjects' => $totalActiveProjects,
+                'totalCompletedProjects' => $totalCompletedProjects,
+                'totalPercentage' => $totalPercentage,
+                'totalFundsNeeded' => $totalFundsNeeded,
+                'totalDonors' => $totalDonors,
+                'totalDonations' => $totalDonations,
+                'totalPositiveOpinions' => $totalPositiveOpinions,
+                'totalNegativeOpinions' => $totalNegativeOpinions
+            ]);
+        }
+        else
+        {
+            return view('projects.index', ['totalProjects' => $totalProjects]);
+        }
+        
     }
 
     public function getList(Request $request)
@@ -125,5 +134,22 @@ class ProjectController extends Controller {
         }
 
         return view('projects.update');
+    }
+
+    public function getDonationsTime() {
+        $donations = DB::table('opinions')->lists('donated_amount_in_cents', 'donated_at');
+        $output = [];
+        $i = 0;
+
+        // Convert cents
+        foreach ($donations as $time => $donation) {
+            $date = new \DateTime($time);
+            $output[$i]['day'] = $date->format('N');
+            $output[$i]['hour'] = $date->format('h');
+            $output[$i]['value'] = $donation / 100;
+            $i++;
+        }
+
+        return response()->json($output);
     }
 }

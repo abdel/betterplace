@@ -13,4 +13,3 @@
 
 Route::get('/', 'ProjectController@getIndex');
 Route::controller('projects', 'ProjectController');
-Route::controller('data', 'DataController');

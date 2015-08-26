@@ -94,8 +94,9 @@
 		@endforeach
 	@else
     	<div class="alert alert-danger" role="alert">
-    		<strong>Oops!</strong> Looks like there are no projects available.
-    	</div>
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <strong>Oops!</strong> Looks like there are no projects available.
+        </div>
 	@endif
 
 @stop
