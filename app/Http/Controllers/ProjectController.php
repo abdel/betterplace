@@ -63,7 +63,7 @@ class ProjectController extends Controller {
             $projects = $projects->whereNull('completed_at');
         }
 
-        // Sort projects
+        // Sort projects accordingly
         $projects = $projects->orderBy($field, $order_by);
 
         $projects = $projects->get();
@@ -78,6 +78,9 @@ class ProjectController extends Controller {
 
     public function getUpdateAll()
     {
+        set_time_limit(60); // Avoid timeout
+
+        // Get all projects around Egypt
         $projectsUrl = "https://api.betterplace.org/en/api_v4/projects.json?around=Egypt&scope=location&per_page=100";
         $projects = json_decode(file_get_contents($projectsUrl), true);
 
@@ -103,6 +106,7 @@ class ProjectController extends Controller {
                     'completed_need_count' => $project['completed_need_count'],
                 );
 
+                // Insert new or update existing project
                 $newProject = Project::firstOrNew(array('external_id' => $project['id']));
                 $newProject->fill($projectData);
                 $newProject->save();
@@ -113,6 +117,7 @@ class ProjectController extends Controller {
 
                 foreach ($opinions['data'] as $opinion)
                 {
+                    // Excluding opinions witothout a donation
                     if (isset($opinion['donated_amount_in_cents'])) 
                     {
                         $opinionData = array(
@@ -125,6 +130,7 @@ class ProjectController extends Controller {
                             'donated_at' => $opinion['created_at']
                         );
 
+                        // Insert new or update existing opinion
                         $newOpinion = Opinion::firstOrNew(array('external_id' => $opinion['id']));
                         $newOpinion->fill($opinionData);
                         $newOpinion->save();
@@ -141,12 +147,12 @@ class ProjectController extends Controller {
         $output = [];
         $i = 0;
 
-        // Convert cents
+        // Prepare output for D3.js
         foreach ($donations as $time => $donation) {
             $date = new \DateTime($time);
             $output[$i]['day'] = $date->format('N');
             $output[$i]['hour'] = $date->format('h');
-            $output[$i]['value'] = $donation / 100;
+            $output[$i]['value'] = $donation / 100; // Cents -> Euros
             $i++;
         }
 

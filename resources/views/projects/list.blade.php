@@ -9,45 +9,46 @@
         	<h1 class="page-header">Projects</h1>
         </div>
   	</div>
-    <p>List of {{ $status }} projects in <strong>Egypt</strong> by <a href="http://betterplace.org/">betterplace</a>.</p>
 
-    <div class="filtersort">
-	    <div class="filters" style="">
-		    <div class="btn btn-default {{ activeFilter('all') }}" data-status="all">
-				<a href="#"><span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> All</a>
+  	@if (count($projects) > 0)
+	    <p>List of {{ $status }} projects in <strong>Egypt</strong> by <a href="http://betterplace.org/">betterplace</a>.</p>
+
+	    <div class="filtersort">
+		    <div class="filters" style="">
+			    <div class="btn btn-default {{ activeFilter('all') }}" data-status="all">
+					<a href="#"><span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> All</a>
+				</div>
+
+				<div class="btn btn-default {{ activeFilter('active') }}" data-status="active">
+					<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Active
+				</div>
+
+				<div class="btn btn-default {{ activeFilter('completed') }}" data-status="completed">
+					<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Completed
+				</div>
 			</div>
 
-			<div class="btn btn-default {{ activeFilter('active') }}" data-status="active">
-				<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Active
+			<div class="sort_order">
+				<div class="form-group">
+				  	<select class="form-control" id="sort_order">
+					    <option value="ASC" {{ isSelected($order_by, 'ASC') }}>Ascendingly</option>
+					    <option value="DESC" {{ isSelected($order_by, 'DESC') }}>Descendingly</option>
+				  	</select>
+				</div>
 			</div>
 
-			<div class="btn btn-default {{ activeFilter('completed') }}" data-status="completed">
-				<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Completed
+			<div class="sort_key">
+				<div class="form-group">
+				  	<select class="form-control" id="sort_key">
+					    <option value="title" {{ isSelected($field, 'title') }}>Title</option>
+					    <option value="donor_count" {{ isSelected($field, 'donor_count') }}>Donors</option>
+					    <option value="progress_percentage" {{ isSelected($field, 'progress_percentage') }}>Funding</option>
+					    <option value="positive_opinions_count" {{ isSelected($field, 'positive_opinions_count') }}>Positive Opinion</option>
+				  	</select>
+				</div>
 			</div>
 		</div>
 
-		<div class="sort_order">
-			<div class="form-group">
-			  	<select class="form-control" id="sort_order">
-				    <option value="ASC" {{ isSelected($order_by, 'ASC') }}>Ascendingly</option>
-				    <option value="DESC" {{ isSelected($order_by, 'DESC') }}>Descendingly</option>
-			  	</select>
-			</div>
-		</div>
-
-		<div class="sort_key">
-			<div class="form-group">
-			  	<select class="form-control" id="sort_key">
-				    <option value="title" {{ isSelected($field, 'title') }}>Title</option>
-				    <option value="donor_count" {{ isSelected($field, 'donor_count') }}>Donors</option>
-				    <option value="progress_percentage" {{ isSelected($field, 'progress_percentage') }}>Funding</option>
-				    <option value="positive_opinions_count" {{ isSelected($field, 'positive_opinions_count') }}>Positive Opinion</option>
-			  	</select>
-			</div>
-		</div>
-	</div>
-
-    @if (count($projects) > 0)
 	    @foreach ($projects as $project)
 		    <div class="panel panel-default">
 		 		<div class="panel-heading">

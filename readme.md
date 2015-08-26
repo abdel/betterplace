@@ -1,27 +1,67 @@
-## Laravel PHP Framework
+## Setting Up
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+Clone the repository to your web directory.
+```
+git clone git@github.com:abdelm/betterplace.git
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+Assuming you have Composer installed, run the command inside the `betterplace` directory to install application dependencies:
+```
+composer install
+```
 
-Laravel is accessible, yet powerful, providing powerful tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+## Enivornment Configuration
 
-## Official Documentation
+Make a copy of the `.env.example` file and rename it to `.env` in order to modify your environment configuration including your database details.
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+To generate a new key for your application, use the following command:
+```
+php artisan key:generate
+```
 
-## Contributing
+Simply set the `APP_KEY` variable to the key you just generated and modify the default database configuration to match your own. Also, make sure the directories `storage` and `bootstrap/cache` are writable by your web server.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+## Migration
 
-## Security Vulnerabilities
+Run all outstanding migrations available in the application after changing your database config using 
+```
+php artisan migrate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+## Virtual Host
 
-### License
+Add a new virtual host to point to the `public` web directory for Laravel by modifying the `httpd-vhosts.conf` if you're using **Apache** or by adding a new file to your `sites-available` directory if you're using **ngnix**.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+**Apache Example:**
+```
+<VirtualHost *:80>
+    DocumentRoot "/path/to/betterplace/public/"
+    ServerName betterplace.app
+    ErrorLog "logs/betterplace.app-error.log"
+    CustomLog "logs/betterplace.app-access.log" common
+</VirtualHost>
+```
+
+**nginx Example:**
+```
+server {
+  listen   80;
+
+  root /path/to/betterplace/public;
+  index index.html index.htm index.php;
+
+  server_name betterplace.app;
+}
+```
+
+Adjust your `/etc/hosts` to add a new record for the server name you chose, for example:
+```
+127.0.0.1 betterplace.app
+```
+
+## Scheduling
+
+The application uses Laravel's built in scheduling tasks to update all project data and opinions for each individual project. In order to use Laravel's scheduling task, you only need to add one cron entry to call Laravel's scheduling system:
+```
+* * * * * php /path/to/artisan schedule:run 1>> /dev/null 2>&1
+```
