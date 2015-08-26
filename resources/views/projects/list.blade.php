@@ -29,8 +29,8 @@
 		<div class="sort_order">
 			<div class="form-group">
 			  	<select class="form-control" id="sort_order">
-				    <option value="ASC" {{ isSelected($order_by, 'ASC') }}>ASC</option>
-				    <option value="DESC" {{ isSelected($order_by, 'DESC') }}>DESC</option>
+				    <option value="ASC" {{ isSelected($order_by, 'ASC') }}>Ascendingly</option>
+				    <option value="DESC" {{ isSelected($order_by, 'DESC') }}>Descendingly</option>
 			  	</select>
 			</div>
 		</div>
