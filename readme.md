@@ -2,7 +2,7 @@
 
 Clone the repository to your web directory.
 ```
-git clone git@github.com:abdelm/betterplace.git
+git clone https://github.com/abdelm/betterplace.git
 ```
 
 Assuming you have Composer installed, run the command inside the `betterplace` directory to install application dependencies:
