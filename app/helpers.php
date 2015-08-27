@@ -29,34 +29,46 @@ if ( ! function_exists('getDescription'))
 	}
 }
 
-function activeFilter($status, $class = 'active') {
-	$request = \Request::instance();
-	$requestStatus = $request->input('status') ?: 'all';
-
-	return ($requestStatus == $status) ? $class : '';
-}
-
-function isSelected($value1, $value2) {
-	return ($value1 == $value2) ? 'selected' : '';
-}
-
-function getAmount($amount)
+if ( ! function_exists('activeFilter'))
 {
-	return number_format($amount / 100);
+	function activeFilter($status, $class = 'active') {
+		$request = \Request::instance();
+		$requestStatus = $request->input('status') ?: 'all';
+
+		return ($requestStatus == $status) ? $class : '';
+	}
 }
 
-function getProjectStatus($status) {
-	switch ($status)
-	{
-		case 'completed':
-			return 1;
+if ( ! function_exists('isSelected'))
+{
+	function isSelected($value1, $value2) {
+		return ($value1 == $value2) ? 'selected' : '';
+	}
+}
 
-			break;
-		case 'active':
-			return 0;
-			break;
-		default:
-			return 'all';
-			break;
+if ( ! function_exists('getAmount'))
+{
+	function getAmount($amount)
+	{
+		return number_format($amount / 100);
+	}
+}
+
+if ( ! function_exists('formatDonations'))
+{
+	function formatDonations($donations)
+	{
+		$i = 0;
+		$arr = [];
+
+		foreach ($donations as $donation) {
+            $arr[$i]['day'] = $donation->day+1; // Format: 0-6 => 1-7
+            $arr[$i]['hour'] = $donation->hour+1; // Format: 0-23 => 1-24
+            $arr[$i]['value'] = round($donation->value / 100); // Cents => Euros
+            $i++;
+        }
+
+        sort($arr);
+        return $arr;
 	}
 }

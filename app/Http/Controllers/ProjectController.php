@@ -18,7 +18,7 @@ class ProjectController extends Controller {
         {
             $totalActiveProjects = DB::table('projects')->whereNull('completed_at')->count();
             $totalCompletedProjects = DB::table('projects')->whereNotNull('completed_at')->count();
-            $totalPercentage = round($totalActiveProjects / $totalProjects * 100);
+            $totalPercentage = round($totalCompletedProjects / $totalProjects * 100);
             $totalFundsNeeded = DB::table('projects')->sum('open_amount_in_cents');
             $totalDonors = DB::table('projects')->sum('donor_count');
             $totalPositiveOpinions = DB::table('projects')->sum('positive_opinions_count');
@@ -41,7 +41,6 @@ class ProjectController extends Controller {
         {
             return view('projects.index', ['totalProjects' => $totalProjects]);
         }
-        
     }
 
     public function getList(Request $request)
@@ -171,20 +170,18 @@ class ProjectController extends Controller {
         return view('projects.update');
     }
 
-    public function getDonationsTime() {
-        $donations = DB::table('opinions')->lists('donated_amount_in_cents', 'donated_at');
-        $output = [];
-        $i = 0;
+    public function getDonationsTime()
+    {
+        $selectDay = DB::raw("date_format(donated_at,'%w') as day");
+        $selectHour = DB::raw("date_format(donated_at,'%H') as hour");
+        $selectValue = DB::raw('SUM(donated_amount_in_cents) as value');
+        $whereDay = DB::raw('weekday(donated_at)');
+        $whereHour = DB::raw('hour(donated_at)');
 
-        // Prepare output for D3.js
-        foreach ($donations as $time => $donation) {
-            $date = new \DateTime($time);
-            $output[$i]['day'] = $date->format('N');
-            $output[$i]['hour'] = $date->format('h');
-            $output[$i]['value'] = $donation / 100; // Cents -> Euros
-            $i++;
-        }
-
-        return response()->json($output);
+        $donationsQuery = DB::table('opinions')->select($selectDay, $selectHour, $selectValue)->groupBy($whereDay)->groupBy($whereHour)->get();
+        $donations = formatDonations($donationsQuery);
+        
+        sort($donations);
+        return response()->json($donations);
     }
 }
