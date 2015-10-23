@@ -80,15 +80,15 @@ class ProjectController extends Controller {
     public function getUpdateAll()
     {
         // Fetch all projects in Egypt
-        $ch = \curl_init();
+        $ch = curl_init();
         $projectsUrl = "https://api.betterplace.org/en/api_v4/projects.json?around=Egypt&scope=location&per_page=100";
 
-        \curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        \curl_setopt($ch, CURLOPT_URL,  $projectsUrl);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL,  $projectsUrl);
         
         $projects = json_decode(curl_exec($ch), true);
-        \curl_close($ch);
+        curl_close($ch);
 
         foreach ($projects['data'] as $project)
         {
