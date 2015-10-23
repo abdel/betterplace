@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Input;
+use Storage;
 use App\Project;
 use App\Opinion;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ProjectController extends Controller {
-
+    
     public function getIndex()
     {
         $totalProjects = DB::table('projects')->count();
