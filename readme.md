@@ -1,3 +1,6 @@
+# Betterplace Egypt
+Aggregates and analyses data about crowd-funded projects in Egypt using the betterplace.org API
+
 ## Setting Up
 
 Clone the repository to your web directory.
